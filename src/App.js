@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import {HashRouter as Router, Switch, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Link, useParams} from 'react-router-dom';
 import Movies from './components/Movies'
 import Admin from './components/Admin'
 import Home from "./components/Home";
@@ -34,6 +34,9 @@ export default function App() {
 
             <div className="col-md-10">
               <Switch>
+                <Route path="/movies/:id">
+                  <Movie />
+                </Route>
                 <Route path="/movies">
                   <Movies />
                 </Route>
@@ -49,4 +52,10 @@ export default function App() {
         </div>
       </Router>
   );
+}
+
+function Movie() {
+  // get the id that is part of the url
+  let { id } = useParams();
+  return <h2>Movie id {id}</h2>
 }
