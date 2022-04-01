@@ -4,6 +4,7 @@ import Movies from './components/Movies'
 import Admin from './components/Admin'
 import Home from "./components/Home";
 import Categories from "./components/Categories"
+import OneMovie from "./components/OneMovie"
 export default function App() {
   return (
       <Router>
@@ -38,9 +39,7 @@ export default function App() {
 
             <div className="col-md-10">
               <Switch>
-                <Route path="/movies/:id">
-                  <Movie />
-                </Route>
+                <Route path="/movies/:id" component={OneMovie}/>
                 <Route path="/movies">
                   <Movies />
                 </Route>
@@ -71,11 +70,6 @@ export default function App() {
   );
 }
 
-function Movie() {
-  // get the id that is part of the url
-  let { id } = useParams();
-  return <h2>Movie id {id}</h2>
-}
 
 function CategoryPage() {
 
