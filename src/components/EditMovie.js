@@ -4,6 +4,9 @@ import Input from './form-components/Input';
 import TextArea from './form-components/TextArea';
 import Select from './form-components/Select';
 import Alert from './ui-components/Alert';
+import { Link } from "react-router-dom";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export default class EditMovie extends Component {
     constructor(props) {
@@ -82,8 +85,9 @@ export default class EditMovie extends Component {
                       alert: {type: "alert-danger", message: data.error.message},
                   });
               }else{
-                  this.setState({
-                      alert: {type: "alert-success", message: "Changes Saved!"},
+                  // after save clicked -> direct usr to admin
+                  this.props.history.push({
+                      pathname: "/admin",
                   });
               }
         })
@@ -149,6 +153,49 @@ export default class EditMovie extends Component {
             this.setState({ isLoaded: true });
         }
     }
+
+    confirmDelete = (e) => {
+        confirmAlert({
+            title: "Delete Movie?",
+            message: "Are you sure?",
+            buttons: [
+                {
+                    label: "Yes",
+                    onClick: () => {
+                        // delete the movie
+                        fetch(
+                            "http://localhost:4000/v1/admin/deletemovie/" +
+                            this.state.movie.id,
+                            { method: "GET" }
+                        )
+                            .then((response) => response.json)
+                            .then((data) => {
+                                if (data.error) {
+                                    this.setState({
+                                        alert: {
+                                            type: "alert-danger",
+                                            message: data.error.message,
+                                        },
+                                    });
+                                } else {
+                                    this.setState({
+                                        alert: { type: "alert-success", message: "Movie deleted!" },
+                                    });
+                                    this.props.history.push({
+                                        pathname: "/admin",
+                                    });
+                                }
+                            });
+                    },
+                },
+                {
+                    label: "No",
+                    onClick: () => {},
+                },
+            ],
+        });
+    };
+
 
     render() {
         let { movie, isLoaded, error } = this.state;
@@ -241,6 +288,15 @@ export default class EditMovie extends Component {
                         <hr/>
 
                         <button className="btn btn-primary">Save</button>
+                        <Link to="/admin" className="btn btn-warning ms-1">
+                            Cancel
+                        </Link>
+                        {movie.id > 0 && (
+                            <a href="#!" onClick={() => this.confirmDelete()}
+                               className="btn btn-danger ms-1">
+                                Delete
+                            </a>
+                            )}
                     </form>
 
                 </Fragment>
