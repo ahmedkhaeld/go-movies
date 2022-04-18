@@ -26,6 +26,7 @@ export default class EditMovie extends Component {
             ],
             isLoaded: false,
             error: null,
+            errors : [],
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -33,9 +34,48 @@ export default class EditMovie extends Component {
     }
 
     handleSubmit = (evt) => {
-        console.log("Form was submitted");
         evt.preventDefault();
-    }
+        // client side validation
+        let errors = [];
+        if (this.state.movie.title=== ""){
+            errors.push("title");
+        }
+        if (this.state.movie.release_date=== ""){
+            errors.push("release_date");
+        }
+        if (this.state.movie.runtime=== ""){
+            errors.push("runtime");
+        }
+        if (this.state.movie.rating=== ""){
+            errors.push("rating");
+        }
+        if (this.state.movie.description=== ""){
+            errors.push("description");
+        }
+        this.setState({errors: errors});
+
+        if (errors.length > 0){
+            return false;
+        }
+
+        // grape tha data from the form
+        const data =new FormData(evt.target);
+        // convert to payload
+        const payload =Object.fromEntries(data.entries());
+        // console.log(payload);
+        // write the request to POST the payload
+        const requestOptions ={
+            method: 'POST',
+            body: JSON.stringify(payload),
+        }
+        // fetch the payload data
+        fetch('http://localhost:4000/v1/admin/editmovie', requestOptions)
+            .then(response => response.json())
+            .then(data=>{
+                console.log(data);
+        })
+
+    };
 
     handleChange = (evt) => {
         let value = evt.target.value;
@@ -46,6 +86,11 @@ export default class EditMovie extends Component {
                 [name]: value,
             }
         }))
+    };
+
+    // check if found an error for the key, return the index of it in the  errors array
+    hasError(key){
+        return this.state.errors.indexOf(key) !== -1;
     }
 
 
@@ -114,10 +159,13 @@ export default class EditMovie extends Component {
                         />
                         <Input
                             title={"Title"}
+                            className={this.hasError("title") ? "is-invalid" : ""}
                             type={'text'}
                             name={'title'}
                             value={movie.title}
                             handleChange={this.handleChange}
+                            errorDiv={this.hasError("title") ? "text-danger" : "d-none"}
+                            errorMsg={"Pleas enter a title"}
                         />
 
                         <Input
@@ -126,6 +174,9 @@ export default class EditMovie extends Component {
                             name={'release_date'}
                             value={movie.release_date}
                             handleChange={this.handleChange}
+                            errorDiv={this.hasError("release_date") ? "text-danger" : "d-none"}
+                            errorMsg={"Pleas enter a release date"}
+
                         />
 
 
@@ -135,6 +186,8 @@ export default class EditMovie extends Component {
                             name={'runtime'}
                             value={movie.runtime}
                             handleChange={this.handleChange}
+                            errorDiv={this.hasError("runtime") ? "text-danger" : "d-none"}
+                            errorMsg={"Pleas enter a release runtime"}
                         />
 
 
@@ -144,6 +197,8 @@ export default class EditMovie extends Component {
                             name={'rating'}
                             value={movie.rating}
                             handleChange={this.handleChange}
+                            errorDiv={this.hasError("rating") ? "text-danger" : "d-none"}
+                            errorMsg={"Pleas enter a rating"}
                         />
 
                         <Select
@@ -162,6 +217,9 @@ export default class EditMovie extends Component {
                             value={movie.description}
                             rows={"3"}
                             handleChange={this.handleChange}
+                            errorDiv={this.hasError("description") ? "text-danger" : "d-none"}
+                            errorMsg={"Pleas enter a description"}
+
                         />
                         <hr/>
 
