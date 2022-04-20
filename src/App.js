@@ -17,12 +17,20 @@ export default class App extends Component {
     this.handleJWTChange(this.handleJWTChange.bind(this));
   }
 
+  componentDidMount() {
+    let t = window.localStorage.getItem("jwt");
+    if (t){
+      if (this.state.jwt === ""){
+        this.setState({jwt: JSON.parse(t)});
+      }
+    }
+  }
   handleJWTChange = (jwt) => {
     this.setState({ jwt: jwt });
   };
-
   logout = () => {
     this.setState({ jwt: "" });
+    window.localStorage.removeItem("jwt");
   };
   render() {
     let loginLink;
@@ -100,9 +108,7 @@ export default class App extends Component {
                     <Admin {...props} jwt={this.state.jwt}/>
                     }
                   />
-                  {/*<Route path="/admin">*/}
-                  {/*  <Admin/>*/}
-                  {/*</Route>*/}
+
                   <Route path="/">
                     <Home/>
                   </Route>
