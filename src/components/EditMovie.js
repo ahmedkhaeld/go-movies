@@ -70,11 +70,15 @@ export default class EditMovie extends Component {
         const data =new FormData(evt.target);
         // convert to payload
         const payload =Object.fromEntries(data.entries());
-        // console.log(payload);
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer " + this.props.jwt);
+
         // write the request to POST the payload
         const requestOptions ={
             method: 'POST',
             body: JSON.stringify(payload),
+            headers: myHeaders
         }
         // fetch the payload data
         fetch('http://localhost:4000/v1/admin/editmovie', requestOptions)
@@ -112,6 +116,14 @@ export default class EditMovie extends Component {
 
 
     componentDidMount() {
+        if (this.props.jwt === "") {
+            this.props.history.push({
+                pathname: "/login",
+            });
+            return;
+        }
+
+
         // check the id,if id gt zero then go get the movie from the db
 
         const id = this.props.match.params.id;
@@ -163,10 +175,16 @@ export default class EditMovie extends Component {
                     label: "Yes",
                     onClick: () => {
                         // delete the movie
+                        const myHeaders = new Headers();
+                        myHeaders.append("Content-Type", "application/json");
+                        myHeaders.append("Authorization", "Bearer " + this.props.jwt);
                         fetch(
                             "http://localhost:4000/v1/admin/deletemovie/" +
                             this.state.movie.id,
-                            { method: "GET" }
+                            {
+                                method: "GET",
+                                headers: myHeaders,
+                            }
                         )
                             .then((response) => response.json)
                             .then((data) => {
