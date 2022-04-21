@@ -88,36 +88,46 @@ export default class App extends Component {
 
               <div className="col-md-10">
                 <Switch>
-                  <Route path="/movies/:id" component={OneMovie}/>
+                  <Route path="/movies/:id" component={OneMovie} />
+
                   <Route path="/movies">
-                    <Movies/>
+                    <Movies />
                   </Route>
+
+                  <Route path="/genre/:id" component={OneGenre} />
+
+                  <Route
+                      exact
+                      path="/login"
+                      component={(props) => (
+                          <Login {...props} handleJWTChange={this.handleJWTChange} />
+                      )}
+                  />
+
                   <Route exact path="/genres">
-                    <Genres/>
+                    <Genres />
                   </Route>
+
                   <Route exact path="/graphql">
                     <GraphQL />
                   </Route>
-                  <Route path="/genre/:id" component={OneGenre}/>
 
-                  <Route exact path="/login" component={(props) =>
-                      <Login {...props} handleJWTChange={this.handleJWTChange} />
-                  }
+                  <Route
+                      path="/admin/movie/:id"
+                      component={(props) => (
+                          <EditMovie {...props} jwt={this.state.jwt} />
+                      )}
                   />
 
-                  <Route path="/admin/movie/:id" component={(props)=>(
-                      <EditMovie {...props} jwt={this.state.jwt}/>
-                  )}
-                  />
-
-                  <Route path="/admin/movie/:id" component={EditMovie}/>
-                  <Route path="/admin" comonent={(props)=>
-                    <Admin {...props} jwt={this.state.jwt}/>
-                    }
+                  <Route
+                      path="/admin"
+                      component={(props) => (
+                          <Admin {...props} jwt={this.state.jwt} />
+                      )}
                   />
 
                   <Route path="/">
-                    <Home/>
+                    <Home />
                   </Route>
                 </Switch>
               </div>
@@ -127,4 +137,3 @@ export default class App extends Component {
     );
   }
 }
-
